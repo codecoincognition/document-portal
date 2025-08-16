@@ -26,6 +26,8 @@ A comprehensive document processing and analysis platform built with FastAPI, La
 - **Vector Database**: FAISS for efficient similarity search
 - **Modular Design**: Clean separation of concerns with dedicated modules
 
+📖 **For detailed architecture information, see [ARCHITECTURE.md](./ARCHITECTURE.md)**
+
 ## 🚀 Quick Start
 
 ### Prerequisites
