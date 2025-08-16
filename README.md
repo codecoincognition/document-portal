@@ -28,6 +28,8 @@ A comprehensive document processing and analysis platform built with FastAPI, La
 
 📖 **For detailed architecture information, see [ARCHITECTURE.md](./ARCHITECTURE.md)**
 
+📝 **For all LLM prompts used in the project, see [prompts.txt](./prompts.txt)**
+
 ## 🚀 Quick Start
 
 ### Prerequisites

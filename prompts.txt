@@ -1,0 +1,282 @@
+# Document Portal - LLM Prompts Collection 📝
+
+This file contains all the prompts used for Large Language Models (LLMs) in the Document Portal project.
+Each prompt is documented with its name, purpose, and complete template.
+
+## 🔍 Document Analysis Prompts
+
+### 1. Document Analysis Prompt
+**Name**: document_analysis_prompt
+**Purpose**: Analyzes and summarizes documents, returning structured JSON metadata
+**Location**: prompt/prompt_library.py
+**Usage**: Document metadata extraction and analysis
+
+**Template**:
+```
+You are a highly capable assistant trained to analyze and summarize documents.
+Return ONLY valid JSON matching the exact schema below.
+
+{format_instructions}
+
+Analyze this document:
+{document_text}
+```
+
+**Variables**:
+- {format_instructions}: JSON schema format instructions
+- {document_text}: The document text to analyze
+
+---
+
+## 📊 Document Comparison Prompts
+
+### 2. Document Comparison Prompt
+**Name**: document_comparison_prompt
+**Purpose**: Compares two documents and identifies differences page by page
+**Location**: prompt/prompt_library.py
+**Usage**: Document comparison analysis
+
+**Template**:
+```
+You will be provided with content from two PDFs. Your tasks are as follows:
+
+1. Compare the content in two PDFs
+2. Identify the difference in PDF and note down the page number 
+3. The output you provide must be page wise comparison content 
+4. If any page do not have any change, mention as 'NO CHANGE' 
+
+Input documents:
+
+{combined_docs}
+
+Your response should follow this format:
+
+{format_instruction}
+```
+
+**Variables**:
+- {combined_docs}: Combined text from both documents
+- {format_instruction}: Output format instructions
+
+---
+
+## 💬 Conversational AI Prompts
+
+### 3. Contextual Question Rewriting Prompt
+**Name**: contextualize_question_prompt
+**Purpose**: Rewrites user queries to be standalone questions using conversation history
+**Location**: prompt/prompt_library.py
+**Usage**: RAG conversation context management
+
+**Template**:
+```
+Given a conversation history and the most recent user query, rewrite the query as a standalone question 
+that makes sense without relying on the previous context. Do not provide an answer—only reformulate the 
+question if necessary; otherwise, return it unchanged.
+
+{chat_history}
+
+{input}
+```
+
+**Variables**:
+- {chat_history}: Previous conversation messages
+- {input}: Current user input/question
+
+### 4. Context-Based Q&A Prompt
+**Name**: context_qa_prompt
+**Purpose**: Answers questions based on retrieved document context
+**Location**: prompt/prompt_library.py
+**Usage**: RAG answer generation
+
+**Template**:
+```
+You are an assistant designed to answer questions using the provided context. Rely only on the retrieved 
+information to form your response. If the answer is not found in the context, respond with 'I don't know.' 
+Keep your answer concise and no longer than three sentences.
+
+{context}
+
+{chat_history}
+
+{input}
+```
+
+**Variables**:
+- {context}: Retrieved document context
+- {chat_history}: Conversation history
+- {input}: User question
+
+---
+
+## 🔧 RAG Chain Prompts
+
+### 5. Improved RAG Prompt Template
+**Name**: improved_prompt_template
+**Purpose**: Enhanced prompt for RAG chains with better guidelines
+**Location**: improved_rag_debug.py
+**Usage**: Debugging and improving RAG performance
+
+**Template**:
+```
+You are a helpful AI assistant. Answer the question based on the context provided below.
+If the context does not contain sufficient information to answer the question accurately, respond with:
+"I do not have enough information to answer this question accurately."
+
+Guidelines:
+- Use only the information provided in the context
+- Be specific and detailed in your response
+- If the context contains relevant data, cite it appropriately
+- If the question is not addressed in the context, say so clearly
+- Provide a comprehensive answer based on the available context
+
+Context: {context}
+
+Question: {question}
+
+Answer:
+```
+
+**Variables**:
+- {context}: Retrieved document context
+- {question}: User question
+
+### 6. Fixed RAG Prompt Template
+**Name**: fixed_prompt_template
+**Purpose**: Corrected prompt template for RAG chains
+**Location**: fix_rag_chain.py
+**Usage**: Fixed RAG implementation
+
+**Template**:
+```
+Answer the question based on the context provided below.
+If the context does not contain sufficient information, respond with:
+"I do not have enough information to answer this question"
+
+Context: {context}
+
+Question: {question}
+
+Answer:
+```
+
+**Variables**:
+- {context}: Retrieved document context
+- {question}: User question
+
+---
+
+## 📚 Experimental Prompts
+
+### 7. Basic RAG Prompt Template
+**Name**: prompt_template
+**Purpose**: Basic prompt template for RAG experiments
+**Location**: notebook/experiments.ipynb
+**Usage**: Experimental RAG testing
+
+**Template**:
+```
+Answer the question based on the context provided below. 
+If the context does not contain sufficient information, respond with: 
+"I do not have enough information about this."
+
+Context: {context}
+
+Question: {question}
+
+Answer:
+```
+
+**Variables**:
+- {context}: Retrieved document context
+- {question}: User question
+
+---
+
+## 🏗️ Prompt Registry
+
+The project uses a centralized prompt registry system located in `prompt/prompt_library.py`:
+
+```python
+PROMPT_REGISTRY = {
+    "document_analysis": document_analysis_prompt,
+    "document_comparison": document_comparison_prompt,
+    "contextualize_question": contextualize_question_prompt,
+    "context_qa": context_qa_prompt,
+}
+```
+
+## 🔧 Prompt Usage Patterns
+
+### 1. **Direct Usage**
+Prompts are used directly in LangChain chains:
+```python
+chain = prompt | llm | parser
+```
+
+### 2. **Registry Access**
+Prompts are accessed through the registry:
+```python
+prompt = PROMPT_REGISTRY[PromptType.DOCUMENT_ANALYSIS.value]
+```
+
+### 3. **Dynamic Prompt Building**
+Prompts are built with dynamic variables:
+```python
+inputs = {
+    "format_instructions": parser.get_format_instructions(),
+    "document_text": document_text
+}
+```
+
+## 📊 Prompt Statistics
+
+- **Total Prompts**: 7 unique prompts
+- **Primary Prompts**: 4 (in prompt library)
+- **Utility Prompts**: 3 (in experimental files)
+- **Template Types**: ChatPromptTemplate, PromptTemplate
+- **Variable Count**: 2-3 variables per prompt
+
+## 🎯 Prompt Design Principles
+
+1. **Clarity**: Each prompt clearly states its purpose and expected output
+2. **Consistency**: Similar prompts follow consistent formatting patterns
+3. **Variable Usage**: Prompts use template variables for dynamic content
+4. **Error Handling**: Prompts include fallback responses for insufficient information
+5. **Context Awareness**: Prompts leverage conversation history and document context
+
+## 🔄 Prompt Evolution
+
+### Version 1.0 (Current)
+- Basic document analysis and comparison
+- Simple RAG implementation
+- Fixed prompt templates
+
+### Future Enhancements
+- Multi-modal prompt support
+- Dynamic prompt generation
+- A/B testing for prompt optimization
+- Prompt versioning and management
+
+---
+
+## 📝 Maintenance Notes
+
+- **Last Updated**: August 2024
+- **Maintained By**: CodeCoincognition Team
+- **Update Frequency**: As new prompts are added
+- **Review Process**: Before each major release
+
+## 🔗 Related Files
+
+- `prompt/prompt_library.py` - Main prompt definitions
+- `improved_rag_debug.py` - Enhanced RAG prompts
+- `fix_rag_chain.py` - Fixed RAG prompts
+- `notebook/experiments.ipynb` - Experimental prompts
+- `src/document_analyzer/data_analysis.py` - Prompt usage
+- `src/document_compare/document_comparator.py` - Prompt usage
+- `src/document_chat/retrieval.py` - Prompt usage
+
+---
+
+*This prompts collection is maintained by the CodeCoincognition Team. For updates or additions, please modify the source files and update this documentation accordingly.*
